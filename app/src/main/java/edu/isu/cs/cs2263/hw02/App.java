@@ -17,6 +17,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j2;
+import org.apache.logging.log4j.LogManager;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignF;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignP;
@@ -24,16 +27,17 @@ import org.kordamp.ikonli.materialdesign2.MaterialDesignP;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Vector;
+import java.util.logging.Logger;
 
+@Log4j2
 public class App extends Application {
-
+    public static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(App.class);
     private Vector<Course> courses;
     private AppView currentView;
     private final Map<String, AppView> views;
     private BorderPane mainLayout;
     private ChoiceBox<String> depts;
     private Scene scene;
-
     public App() {
         views = Maps.newHashMap();
         views.put("Welcome", new WelcomeView(this));
@@ -78,6 +82,7 @@ public class App extends Application {
         Button exit = new Button("Exit");
         exit.setOnAction(event -> {
             exit();
+            logger.info("Exited program window displayed");
         });
         exit.setGraphic(FontIcon.of(MaterialDesignP.POWER, 20));
 
@@ -124,6 +129,7 @@ public class App extends Application {
         FontIcon fi = FontIcon.of(MaterialDesignF.FLASK_EMPTY, 32);
 
         primaryStage.show();
+        logger.info("Displaying stage");
     }
 
     public Vector<Course> getCourses() {
@@ -140,22 +146,26 @@ public class App extends Application {
     public void showCourseForm() {
         setView("CourseForm");
         currentView.updateData();
+        logger.info("Updated course form");
     }
 
     public void displayList() {
         setView("DisplayList");
         currentView.updateData();
+        logger.info("Updated DisplayList");
     }
 
     public void exit() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirmation");
         alert.setContentText("Are you sure you want to exit?");
+        logger.info("Showing exit function alert");
 
         Optional<ButtonType> result = alert.showAndWait();
         result.ifPresent(btnType -> {
             if (btnType.getButtonData().isDefaultButton())
                 System.exit(0);
+                logger.info("Exited program");
         });
     }
 
@@ -165,13 +175,17 @@ public class App extends Application {
 
     public void showWelcome() {
         setView("Welcome");
+        logger.info("Displaying Welcome");
     }
 
     public void addCourse(Course course) {
         courses.add(course);
+        logger.info("Addded a course");
     }
 
     public static void main(String[] args) {
+        logger.info("Launching program");
         Application.launch(args);
+        logger.info("Launched program");
     }
 }
