@@ -15,11 +15,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
+import org.apache.logging.log4j.LogManager;
 import org.kordamp.ikonli.javafx.FontIcon;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignP;
 import org.kordamp.ikonli.materialdesign2.MaterialDesignR;
 
 public class CoursesFormView extends AppView {
+    public static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(App.class);
 
     private TextField tfName;
     private Spinner<Integer> spnNumber;
@@ -33,6 +35,7 @@ public class CoursesFormView extends AppView {
 
     @Override
     public void initView() {
+        logger.info("Initialized view");
         lblMessage = new Label("");
 
         tfName = new TextField();
@@ -106,11 +109,13 @@ public class CoursesFormView extends AppView {
         if (tfName.getText().isBlank()) {
             lblMessage.setText("Error: Name cannot be empty!");
             lblMessage.setTextFill(Color.RED);
+            logger.error("Must input a name");
         } else {
             lblMessage.setText("");
 
             Course c = new Course(tfName.getText(), code, spnNumber.getValue(), spnCredits.getValue());
             parent.addCourse(c);
+            logger.info("Added course");
 
             parent.showWelcome();
         }
@@ -121,11 +126,13 @@ public class CoursesFormView extends AppView {
         tfName.setText("");
         spnCredits.decrement(spnCredits.getValue());
         spnNumber.decrement(spnNumber.getValue() - 100);
+        logger.info("Reset");
     }
 
     @Override
     public void updateData() {
         code = Course.CODES[parent.getSelectedDepartment()];
+        logger.info("Updated data");
         reset();
     }
 }
